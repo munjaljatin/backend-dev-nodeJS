@@ -17,3 +17,24 @@ console.log(
     return num;
   })
 );
+
+console.log(
+  arr.filter((num) => {
+    if (num % 2 == 0) {
+      return num;
+    }
+  })
+);
+
+function filter(num) {
+  return num % 2 == 0;
+}
+console.log(arr.filter(filter));
+
+// reduce function is also available with arrays
+const newArr = [1, 2, 3, 4, 5];
+function calculateSum(prevResult, currentValue) {
+  return prevResult + currentValue;
+}
+
+console.log(newArr.reduce(calculateSum));
