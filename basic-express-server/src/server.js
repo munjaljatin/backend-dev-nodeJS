@@ -20,6 +20,9 @@ const middleware2 = (req, res, next) => {
 app.get("/", (req, res) => {
   res.send("Hi server is running");
 });
+app.get("/jatin", (req, res) => {
+  console.log(req, res);
+});
 
 app.get("/api", middleware1, middleware2, (req, res) => {
   // everytime, when the user calls the /api then this callback will be called
