@@ -128,10 +128,36 @@ const deleteBook = async (req, res) => {
   }
 };
 
+const patchBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const patchedBook = await bookModel.patchBook(id, req.body);
+
+    if (!patchedBook) {
+      return res.status(404).json({
+        success: false,
+        message: "Book Not Found!",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Book Patched Successfully",
+      data: patchedBook,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 module.exports = {
   createBook,
   getAllBooks,
   getBookById,
   updateBook,
+  patchBook,
   deleteBook,
 };

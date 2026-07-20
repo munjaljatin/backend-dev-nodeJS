@@ -1,5 +1,7 @@
 const pool = require("../config/db");
 
+const allowedFields = ["title", "author", "genre", "price", "published_year"];
+
 const createBook = async ({ title, author, genre, price, published_year }) => {
   const query = `INSERT INTO books(
   title,
@@ -58,10 +60,41 @@ const deleteBook = async (id) => {
   const result = await pool.query(query, [id]);
   return result.rows;
 };
+
+const patchBook = async (id, updates) => {
+  const fields = [];
+  const values = [];
+  let index = 1;
+  for (const key of allowedFields) {
+    if (updates[key] !== undefined) {
+      fields.push(`${key} = $${index}`);
+      values.push(updates[key]);
+      index++;
+    }
+  }
+  if (fields.length === 0) {
+    throw new Error("No fields provided for update");
+  }
+
+  fields.push(`updated_at = CURRENT_TIMESTAMP`);
+
+  values.push(id);
+
+  const query = `
+        UPDATE books
+        SET ${fields.join(", ")}
+        WHERE id = $${index}
+        RETURNING *;
+    `;
+
+  const result = await pool.query(query, values);
+  return result.rows[0];
+};
 module.exports = {
   createBook,
   getAllBooks,
   getBookById,
   updateBook,
+  patchBook,
   deleteBook,
 };
